@@ -6,5 +6,6 @@
 - Every page has a Home button in the nav so visitors can always get back to the home page.
 - The meeting location is left off the site for privacy, and visitors are asked to get in touch for it.
 - Contact goes through a `mailto:` link rather than a form, because GitHub Pages has no backend.
-- The logo is shown as a circle.
+- The logo is shown as a circle, and a circular copy of it is used as the browser tab icon so it matches the rest of the site.
+- The Discord and Instagram links open in a new tab, so visitors don't lose the club site.
 - The layout is wider (56rem) with a sans-serif font (Source Sans 3) instead of Times New Roman, for a cleaner look.
