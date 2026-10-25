@@ -4,6 +4,8 @@ Website for InterVarsity Graduate Christian Fellowship at NC State.
 
 ## Editing
 
-All the text lives in `index.html`. Every spot that needs filling in is marked with an `EDIT` comment. Search for `EDIT` to find them. Styling is in `style.css`.
+Each page is its own file: `index.html` (home), `about.html`, `meetings.html`, `contact.html`. Styling is in `style.css`.
+
+The header and nav are copied into every page, so a change to them (e.g. adding a page) has to be made in all four files.
 
 Push to `main` and GitHub Pages updates the site in a minute or two.

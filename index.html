@@ -3,59 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- EDIT: page title shown in the browser tab -->
   <title>InterVarsity GCF | NC State</title>
   <link rel="icon" href="ivgrads_logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <img src="ivgrads_logo.png" alt="InterVarsity GCF | NCSU logo" width="120" height="120">
-    <!-- EDIT: club name -->
-    <h1>InterVarsity Graduate Christian Fellowship at NCSU</h1>
-    <nav>
-      <a href="#about">About</a> ·
-      <a href="#meetings">Meetings</a> ·
-      <a href="#contact">Contact</a>
-    </nav>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="ivgrads_logo.png" alt="" width="48" height="48">
+        <span>InterVarsity Graduate Christian Fellowship at NCSU</span>
+      </a>
+      <nav>
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="about.html">About</a>
+        <a href="meetings.html">Meetings</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section id="about">
-      <h2>About us</h2>
-      <!-- EDIT: who you are, who the group is for -->
-      <p>[About text goes here.]</p>
-      <!-- EDIT: optional second paragraph, delete if not needed -->
-      <p>[More about the group, if you want it.]</p>
-    </section>
-
-    <section id="meetings">
-      <h2>When we meet</h2>
-      <p><strong>Tuesdays, 7:15 pm</strong></p>
-      <!-- EDIT: location name, and swap #TODO-map for a Google Maps link -->
-      <p>[Location name], <a href="#TODO-map">[address]</a></p>
-      <!-- EDIT: optional, what a first-timer should expect. Delete if not needed -->
-      <p>[What a typical night looks like.]</p>
-    </section>
-
-    <section id="contact">
-      <h2>Get in touch</h2>
-      <!-- EDIT: optional intro line -->
-      <p>[Short line inviting people to reach out.]</p>
-      <ul>
-        <!-- EDIT: replace both copies of the email address -->
-        <li>Email: <a href="mailto:TODO@ncsu.edu">TODO@ncsu.edu</a></li>
-        <!-- EDIT: Discord invite link -->
-        <li>Discord: <a href="#TODO-discord">join our server</a></li>
-        <!-- EDIT: Instagram profile link and handle -->
-        <li>Instagram: <a href="#TODO-instagram">@[handle]</a></li>
-      </ul>
-    </section>
+  <main class="wrap home">
+    <img class="logo-big" src="ivgrads_logo.png" alt="InterVarsity GCF | NCSU logo" width="180" height="180">
+    <h1>InterVarsity Graduate Christian Fellowship at NCSU</h1>
+    <!-- EDIT: welcome line for the home page -->
+    <p class="lead">We're a campus ministry club here at NC State, focused on helping graduate students follow Jesus.</p>
+    <p class="when">We meet <strong>Tuesdays at 7:15 pm</strong>.</p>
+    <p class="buttons">
+      <a class="button" href="meetings.html">Come to a meeting</a>
+      <a class="button secondary" href="contact.html">Get in touch</a>
+    </p>
   </main>
 
-  <footer>
-    <!-- EDIT: footer text -->
+  <footer class="wrap">
     <p>InterVarsity GCF at NC State</p>
   </footer>
 
