@@ -59,3 +59,20 @@ h1 em,h2 em,.event-copy h3 em,.event-art-title em,.resource-art i{font-style:nor
 .event-poster>img{object-fit:contain}
 .event-poster>img.event-poster-bg{object-fit:cover;filter:blur(28px) brightness(.65);transform:scale(1.2)}
 @media(max-width:560px){.event-image.event-poster{height:380px;min-height:380px}}
+.media-section{padding:95px 0;border-bottom:1px solid var(--line);overflow:hidden}
+.media-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:44px}
+.media-heading h2{margin:0}
+.media-toggle{display:inline-flex;align-items:center;gap:10px;flex:none;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:11px 16px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+.media-toggle:hover{background:#edf4f6}
+.media-toggle-icon{display:block;width:8px;height:11px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+.media-section.paused .media-toggle-icon{width:0;height:0;border-style:solid;border-width:6px 0 6px 10px;border-color:transparent transparent transparent currentColor}
+.marquee{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marquee:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.marquee-track{display:flex;width:max-content;list-style:none;margin:0;padding:0;animation:marquee 70s linear infinite}
+.marquee-track li{flex:none;padding-right:18px}
+.marquee-track img{height:300px;width:auto;aspect-ratio:16/9;object-fit:cover;border-radius:5px;background:#e5eff4}
+.marquee:hover .marquee-track,.marquee:focus-within .marquee-track,.media-section.paused .marquee-track{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.marquee{overflow-x:auto}.marquee-track{animation:none}.media-toggle{display:none}}
+@media(max-width:800px){.media-section{padding:65px 0}.marquee-track img{height:230px}}
+@media(max-width:560px){.media-heading{flex-direction:column;align-items:flex-start;margin-bottom:28px}.marquee-track img{height:180px}.marquee-track li{padding-right:12px}.marquee-track{animation-duration:55s}}

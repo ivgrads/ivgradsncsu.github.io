@@ -59,13 +59,14 @@ carousel.addEventListener('touchend',event=>{if(!touchOrigin)return;const dx=eve
 carousel.addEventListener('touchcancel',()=>{touchOrigin=null},{passive:true});
 refreshCarousel();
 
-// Autoplay: advances every few seconds. It holds while the pointer is over the carousel,
-// while keyboard focus is inside it, and while the tab is hidden. The pause button stops it
-// for good, and it starts paused for visitors who ask their device to reduce motion.
-const AUTOPLAY_MS=6000;
+// Autoplay: advances every few seconds and keeps going after arrow, dot, or swipe
+// navigation (the countdown just restarts). It holds only while a keyboard user is tabbing
+// inside the carousel and while the browser tab is hidden. The pause button stops it, and it
+// starts paused for visitors who ask their device to reduce motion.
+const AUTOPLAY_MS=4000;
 const toggleButton=document.querySelector('#event-toggle');
-let autoplayTimer=null,userPaused=matchMedia('(prefers-reduced-motion: reduce)').matches,hovering=false,focusInside=false;
-function autoplayActive(){return !userPaused&&!hovering&&!focusInside&&!document.hidden&&eventSlides.length>1}
+let autoplayTimer=null,userPaused=matchMedia('(prefers-reduced-motion: reduce)').matches,focusInside=false;
+function autoplayActive(){return !userPaused&&!focusInside&&!document.hidden&&eventSlides.length>1}
 function restartAutoplay(){
  clearInterval(autoplayTimer);autoplayTimer=null;
  if(autoplayActive())autoplayTimer=setInterval(()=>showEvent(eventIndex+1,true),AUTOPLAY_MS);
@@ -75,9 +76,11 @@ function updateToggle(){
  toggleButton.classList.toggle('paused',userPaused);
 }
 toggleButton.addEventListener('click',()=>{userPaused=!userPaused;updateToggle();restartAutoplay()});
-carousel.addEventListener('mouseenter',()=>{hovering=true;restartAutoplay()});
-carousel.addEventListener('mouseleave',()=>{hovering=false;restartAutoplay()});
-carousel.addEventListener('focusin',event=>{focusInside=event.target!==carousel;restartAutoplay()});
+// Clicking or tapping a control also moves focus into the carousel, so focus that follows
+// a pointer press doesn't count as "reading"; only keyboard focus holds the autoplay.
+let pointerPressed=false;
+carousel.addEventListener('pointerdown',()=>{pointerPressed=true;setTimeout(()=>{pointerPressed=false},0)});
+carousel.addEventListener('focusin',event=>{focusInside=!pointerPressed&&event.target!==toggleButton;restartAutoplay()});
 carousel.addEventListener('focusout',event=>{if(!carousel.contains(event.relatedTarget)){focusInside=false;restartAutoplay()}});
 document.addEventListener('visibilitychange',restartAutoplay);
 updateToggle();restartAutoplay();
@@ -165,4 +168,26 @@ updateToggle();restartAutoplay();
    refreshCarousel();
   })
   .catch(error=>console.error(error)); // on failure the built-in slides still work
+})();
+
+// Media section: a continuous photo strip. The photo list is duplicated once so the CSS
+// animation (which slides the track left by half its width) loops without a visible jump.
+// The copies are hidden from screen readers. Hovering or focusing the strip pauses it,
+// and the button pauses it until pressed again.
+(function setUpMarquee(){
+ const section=document.querySelector('#media');
+ const track=document.querySelector('#marquee-track');
+ const toggle=document.querySelector('#media-toggle');
+ if(!section||!track||!toggle)return;
+ [...track.children].forEach(item=>{
+  const copy=item.cloneNode(true);
+  copy.setAttribute('aria-hidden','true');
+  copy.querySelectorAll('img').forEach(img=>{img.alt=''});
+  track.append(copy);
+ });
+ toggle.addEventListener('click',()=>{
+  const paused=section.classList.toggle('paused');
+  toggle.setAttribute('aria-pressed',String(paused));
+  toggle.querySelector('.media-toggle-label').textContent=paused?'Play photos':'Pause photos';
+ });
 })();
