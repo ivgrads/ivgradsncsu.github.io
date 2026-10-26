@@ -55,3 +55,4 @@ h1 em,h2 em,.gather-detail h3 em,.event-copy h3 em,.event-art-title em,.resource
 
 /* Match the section 4/5 divider at both boundaries of section 2. */
 .gather-section{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+@media(max-width:560px){.event-pagination{gap:2px;min-width:0}.event-dot{width:22px}.event-dot:after{left:7.5px}.event-dot.active:after{left:.5px}.event-count{display:none}}
