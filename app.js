@@ -13,8 +13,8 @@ document.querySelector('#calendar-button').addEventListener('click',()=>{const n
 // right after the Tuesday fellowship slide. Leaders just add events in Google Calendar.
 // Setup steps are in README.md under "Events calendar".
 const GOOGLE_CALENDAR={
- id:'',     // e.g. 'abc123@group.calendar.google.com'
- apiKey:'', // browser API key, restricted to this site's address
+ id:'5f02d8bad6da17cfe7d175e16193845d21162119f52a7ed7a367728f3b31fdfa@group.calendar.google.com',     // e.g. 'abc123@group.calendar.google.com'
+ apiKey:'AIzaSyDXg2Olakb891yrKkzVz6VJBu0eqT1SGew', // browser API key, restricted to this site's address
  maxEvents:4
 };
 
@@ -47,14 +47,40 @@ function showEvent(index,quiet){
  carousel.querySelector('.event-count').textContent=String(eventIndex+1).padStart(2,'0')+' / '+String(eventSlides.length).padStart(2,'0');
  if(!quiet)document.querySelector('#event-status').textContent='Slide '+(eventIndex+1)+' of '+eventSlides.length+': '+eventSlides[eventIndex].dataset.name;
 }
-document.querySelector('#event-prev').addEventListener('click',()=>showEvent(eventIndex-1));
-document.querySelector('#event-next').addEventListener('click',()=>showEvent(eventIndex+1));
-carousel.addEventListener('keydown',event=>{if(event.key==='ArrowRight'){event.preventDefault();showEvent(eventIndex+1)}else if(event.key==='ArrowLeft'){event.preventDefault();showEvent(eventIndex-1)}});
+// User navigation: show the slide and restart the autoplay countdown.
+function goTo(index){showEvent(index);restartAutoplay()}
+document.querySelector('#event-prev').addEventListener('click',()=>goTo(eventIndex-1));
+document.querySelector('#event-next').addEventListener('click',()=>goTo(eventIndex+1));
+pagination.addEventListener('click',restartAutoplay);
+carousel.addEventListener('keydown',event=>{if(event.key==='ArrowRight'){event.preventDefault();goTo(eventIndex+1)}else if(event.key==='ArrowLeft'){event.preventDefault();goTo(eventIndex-1)}});
 let touchOrigin=null;
 carousel.addEventListener('touchstart',event=>{if(event.touches.length===1)touchOrigin={x:event.touches[0].clientX,y:event.touches[0].clientY}}, {passive:true});
-carousel.addEventListener('touchend',event=>{if(!touchOrigin)return;const dx=event.changedTouches[0].clientX-touchOrigin.x;const dy=event.changedTouches[0].clientY-touchOrigin.y;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)showEvent(eventIndex+(dx<0?1:-1));touchOrigin=null},{passive:true});
+carousel.addEventListener('touchend',event=>{if(!touchOrigin)return;const dx=event.changedTouches[0].clientX-touchOrigin.x;const dy=event.changedTouches[0].clientY-touchOrigin.y;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)goTo(eventIndex+(dx<0?1:-1));touchOrigin=null},{passive:true});
 carousel.addEventListener('touchcancel',()=>{touchOrigin=null},{passive:true});
 refreshCarousel();
+
+// Autoplay: advances every few seconds. It holds while the pointer is over the carousel,
+// while keyboard focus is inside it, and while the tab is hidden. The pause button stops it
+// for good, and it starts paused for visitors who ask their device to reduce motion.
+const AUTOPLAY_MS=6000;
+const toggleButton=document.querySelector('#event-toggle');
+let autoplayTimer=null,userPaused=matchMedia('(prefers-reduced-motion: reduce)').matches,hovering=false,focusInside=false;
+function autoplayActive(){return !userPaused&&!hovering&&!focusInside&&!document.hidden&&eventSlides.length>1}
+function restartAutoplay(){
+ clearInterval(autoplayTimer);autoplayTimer=null;
+ if(autoplayActive())autoplayTimer=setInterval(()=>showEvent(eventIndex+1,true),AUTOPLAY_MS);
+}
+function updateToggle(){
+ toggleButton.setAttribute('aria-label',userPaused?'Play slideshow':'Pause slideshow');
+ toggleButton.classList.toggle('paused',userPaused);
+}
+toggleButton.addEventListener('click',()=>{userPaused=!userPaused;updateToggle();restartAutoplay()});
+carousel.addEventListener('mouseenter',()=>{hovering=true;restartAutoplay()});
+carousel.addEventListener('mouseleave',()=>{hovering=false;restartAutoplay()});
+carousel.addEventListener('focusin',event=>{focusInside=event.target!==carousel;restartAutoplay()});
+carousel.addEventListener('focusout',event=>{if(!carousel.contains(event.relatedTarget)){focusInside=false;restartAutoplay()}});
+document.addEventListener('visibilitychange',restartAutoplay);
+updateToggle();restartAutoplay();
 
 (function loadCalendarSlides(){
  if(!GOOGLE_CALENDAR.id||!GOOGLE_CALENDAR.apiKey)return; // not set up yet: keep the built-in slides
@@ -82,6 +108,27 @@ refreshCarousel();
   big.append(weekdayShort.format(start)+'.',document.createElement('br'),el('em',null,monthDay.format(start)+'.'));
   const bottom=el('div','event-art-bottom','IVGRADS@NCSU ');bottom.append(el('span',null,'↗'));
   art.append(el('div','event-art-kicker','UPCOMING EVENT'),big,bottom);
+  // If the event has an image attached (from Google Drive), swap it in for the color block.
+  // The swap only happens once the image actually loads, so a private or broken file
+  // just leaves the color block in place.
+  const image=(event.attachments||[]).find(file=>file.fileId&&/^image\//.test(file.mimeType||''));
+  if(image){
+   const photo=new Image();
+   photo.referrerPolicy='no-referrer';
+   photo.alt=title;
+   photo.decoding='async';
+   photo.addEventListener('load',()=>{
+    // Flyers come in any shape, so show the whole image (no cropping) and fill the
+    // leftover space with a blurred, darkened copy of the same image.
+    const panel=el('div','event-image event-poster');
+    const backdrop=new Image();
+    backdrop.className='event-poster-bg';backdrop.alt='';backdrop.setAttribute('aria-hidden','true');
+    backdrop.referrerPolicy='no-referrer';backdrop.src=photo.src;
+    panel.append(backdrop,photo);
+    art.replaceWith(panel);
+   },{once:true});
+   photo.src='https://drive.google.com/thumbnail?id='+encodeURIComponent(image.fileId)+'&sz=w1600';
+  }
   // Right panel: same structure as the built-in slides.
   const copy=el('div','event-copy');
   const category=el('span','event-category');category.append(el('span','live-dot'),' UPCOMING EVENT');

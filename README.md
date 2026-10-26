@@ -8,6 +8,8 @@ What leaders see on the site:
 - Each event's title, date and time, location, and the first ~220 characters of its description.
 - A repeating event (for example, weekly) shows only its next occurrence.
 - Until the calendar is set up, or if it can't load, the carousel shows the built-in slides only.
+- If an event has an image attached, the slide shows that image instead of the color block. Attach it from Google Drive in the event's "Add attachment" option, then set that file's sharing to "Anyone with the link" (Viewer). If the image isn't shared publicly, the slide keeps the color block.
+- The carousel advances every 6 seconds. It holds while the pointer is over it or keyboard focus is inside it, and the pause button stops it. Visitors whose device is set to reduce motion start paused.
 
 ### One-time setup
 1. Sign in to Google Calendar with the chapter account (ivgradsncsu@gmail.com).
